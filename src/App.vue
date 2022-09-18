@@ -1,30 +1,42 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <div v-if="getToken && (getProfile?.auths_group_id == 1 || getProfile?.auths_group_id == 0)" class="common-layout">
+    <el-container>
+      <el-aside width="250px"><Aside></Aside></el-aside>
+
+      <el-container style="height: 100vh">
+        <el-header><HeaderVue></HeaderVue></el-header>
+        <el-container class="d-flex justify-content-between h-100">
+          <el-main class=""><router-view /></el-main>
+          <el-footer><Footer></Footer></el-footer>
+        </el-container>
+      </el-container>
+    </el-container>
   </div>
-  <router-view/>
+  <div v-else>
+    <login></login>
+  </div>
 </template>
-
+<script>
+import Aside from "@/layout/aside";
+import Footer from "@/layout/footer";
+import HeaderVue from "@/layout/header";
+import { mapGetters } from "vuex";
+import Login from "./views/Login/login.vue";
+import axios from "axios";
+export default {
+  components: { Aside, Footer, HeaderVue, Login },
+  computed: {
+    ...mapGetters(["getToken", "getProfile"]),
+  },
+  mounted() {
+    axios.defaults.headers.common["token"] = this.getToken;
+    axios.defaults.headers.common["Content-Type"] = "application/json";
+    axios.defaults.baseURL = "https://api.fungiturkey.org/api/";
+  },
+};
+</script>
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+.common-layout {
+  height: 100vh;
 }
 </style>

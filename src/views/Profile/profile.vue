@@ -1,0 +1,21 @@
+<template>
+  <div>
+    Profil
+    <edit database="fungitu2_Simple" table_name="users" :id="getProfile.id"></edit>
+  </div>
+</template>
+
+<script>
+import edit from "@/components/edit/edit.vue";
+import { mapGetters } from "vuex";
+export default {
+  computed: {
+    ...mapGetters(["getProfile"]),
+  },
+  components: {
+    edit,
+  },
+};
+</script>
+
+<style></style>

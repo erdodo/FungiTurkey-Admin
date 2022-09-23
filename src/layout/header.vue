@@ -1,6 +1,7 @@
 <template>
   <div class="card h-100 px-2">
     <div class="d-flex justify-content-between h-100 align-items-center">
+      <el-button type="primary" class="d-md-none" :icon="Menu" circle @click="menu_state = !menu_state" />
       <h5>Hoş geldiniz</h5>
       <el-dropdown>
         <span class="el-dropdown-link">
@@ -22,10 +23,14 @@
 <script>
 import { mapGetters } from "vuex";
 import passwordChange from "../modals/passwordChange.vue";
+import { Menu } from "@element-plus/icons-vue";
 export default {
+  props: ["menuState"],
   data() {
     return {
       passState: false,
+      menu_state: false,
+      Menu,
     };
   },
   components: { passwordChange },
@@ -39,6 +44,14 @@ export default {
     },
     routeToProfile() {
       this.$router.push("/profil");
+    },
+  },
+  watch: {
+    menu_state() {
+      this.$emit("menu_state", this.menu_state);
+    },
+    menuState() {
+      this.menu_state = this.menuState;
     },
   },
 };

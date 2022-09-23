@@ -7,12 +7,14 @@
         <el-option label="Kullanıcı" :value="2" />
       </el-select>
       <div v-else>
-        <div v-if="c.type == 'file'" class="d-flex">
-          <div v-if="prm[name]" class="position-relative">
+        <div v-if="c.type == 'file'" class="row">
+          <div v-if="prm[name]" class="position-relative col-12 col-md-6">
             <el-button type="danger" style="" class="image-remover" circle @click="imageRemove(name)"> X </el-button>
-            <img :src="baseImg + prm[name]" height="200" class="rounded" alt="" />
+            <img :src="baseImg + prm[name]" class="rounded" style="max-height: 250px; max-width: 100%" alt="" />
           </div>
-          <input type="file" :ref="name" :placeholder="c.display" class="form-control mx-2" />
+          <div class="mt-2 mt-md-0 col-12 col-md-6 text-center">
+            <input type="file" :ref="name" :placeholder="c.display" class="form-control" />
+          </div>
         </div>
 
         <input
@@ -103,9 +105,7 @@ export default {
       const formData = new FormData();
 
       for (const [key, val] of Object.entries(this.columns)) {
-        if (val.name == "status") {
-          formData.append("status", "0");
-        } else if (val.type == "file") {
+        if (val.type == "file") {
           if (this.$refs.image?.[0]?.files[0] != undefined) {
             formData.append(key, this.$refs.image?.[0]?.files[0]);
           } else {

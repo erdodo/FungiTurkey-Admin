@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading" class="py-3 card h-100">
+  <div v-loading="loading" class="card py-3 h-100">
     <el-menu :default-active="this.$route.fullPath" class="el-menu-vertical-demo" router>
       <el-sub-menu v-for="db in databases" :key="db" :index="'/list/' + db.name">
         <template #title>
@@ -11,6 +11,17 @@
           </template>
         </el-menu-item>
       </el-sub-menu>
+      <div class="text-center w-100">
+        <el-button
+          type="danger"
+          plain
+          class="d-md-none mt-2 mb-4 text-center"
+          :index="this.$router.fullPath"
+          @click="menu_state = !menu_state"
+        >
+          <i class="bi bi-x-square me-2"></i>Menü kapat
+        </el-button>
+      </div>
     </el-menu>
   </div>
 </template>
@@ -19,11 +30,13 @@
 import { list } from "@/hooks/iletisim";
 import { mapGetters } from "vuex";
 export default {
+  props: ["menuState"],
   data() {
     return {
       tables: {},
       databases: {},
       loading: true,
+      menu_state: true,
     };
   },
   computed: {
@@ -42,6 +55,10 @@ export default {
     list("fungitu2_Simple", "table_group", paramstg)
       .then((res) => {
         this.databases = res.data.data;
+        if (res.data.status == "error") {
+          this.$store.commit("setToken", "");
+          this.$store.commit("setProfile", "");
+        }
         list("fungitu2_Simple", "tables", params).then((res) => {
           if (res.data.status == "error") {
             this.$store.commit("setToken", "");
@@ -62,6 +79,14 @@ export default {
           this.$store.commit("setProfile", "");
         }
       });
+  },
+  watch: {
+    menu_state() {
+      this.$emit("menu_state", this.menu_state);
+    },
+    menuState() {
+      this.menu_state = this.menuState;
+    },
   },
 };
 </script>

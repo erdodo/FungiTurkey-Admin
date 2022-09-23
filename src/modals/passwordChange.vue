@@ -3,9 +3,9 @@
     <label for="">Eski şifreniz</label>
     <el-input v-model="oldPass" show-password type="password" placeholder="Eski Şifreniz" />
     <label for="">Yeni şifreniz</label>
-    <el-input v-model="newPass" show-password type="password" placeholder="Eski Şifreniz" />
+    <el-input v-model="newPass" show-password type="password" placeholder="Yeni şifreniz" />
     <label for="">Yeni şifreniz Tekrar</label>
-    <el-input v-model="checkPass" show-password type="password" placeholder="Eski Şifreniz" />
+    <el-input v-model="checkPass" show-password type="password" placeholder="Yeni şifreniz Tekrar" />
     <template #footer>
       <span class="dialog-footer">
         <el-button type="primary" @click="newPassword()">Onayla</el-button>

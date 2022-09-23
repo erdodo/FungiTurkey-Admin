@@ -3,7 +3,7 @@
     <div class="d-flex justify-content-end" v-if="getAuths?.[table_name]?.['create_access'] == '1'">
       <el-button type="primary" @click="yonlendir('create')">Ekle</el-button>
     </div>
-    <el-table :data="datas?.data" height="80vh" style="width: 100%" v-loading="loading">
+    <el-table :data="datas?.data" height="70vh" style="width: 100%" v-loading="loading">
       <el-table-column v-for="clm in datas.columns" :key="clm" :prop="clm.name" :label="clm.display" min-width="200">
         <template #default="props" v-if="clm.type == 'file' || clm.type == 'tinyint' || clm.type == 'bit'">
           <div class="w-100 text-center" v-if="clm.type == 'file'">
@@ -23,10 +23,11 @@
             <el-switch v-model="props.row[clm.name]" @click="switchChange(clm.name, props.row)" />
           </div>
         </template>
+        <template #default="props" v-else><div v-html="props.row[clm.name]"></div></template>
       </el-table-column>
-      <el-table-column fixed="right" label="İşlemler" width="100">
+      <el-table-column fixed="right" label="İşlemler" width="min-content">
         <template #default="props">
-          <div class="d-flex flex-column">
+          <div class="d-none d-md-flex flex-column">
             <el-button
               v-if="getAuths?.[table_name]?.['edit_access'] == '1'"
               type="success"
@@ -49,7 +50,7 @@
             </el-popconfirm>
             <router-link
               :to="'/activity/' + props.row.id"
-              class="btn btn-primary m-1 btn-sm mt-2"
+              class="btn btn-primary m-1 btn-sm mt-2 text-nowrap"
               v-if="table_name == 'Activity'"
               >Detay</router-link
             >
@@ -57,6 +58,30 @@
             <router-link :to="'/blog/' + props.row.id" class="btn btn-primary m-1 btn-sm mt-2" v-if="table_name == 'Blog'"
               >Yorumlar</router-link
             >
+          </div>
+          <div class="d-block d-md-none">
+            <el-dropdown>
+              <el-button plain type="success">
+                <i class="bi bi-pencil-square"></i>
+              </el-button>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item
+                    v-if="getAuths?.[table_name]?.['edit_access'] == '1'"
+                    @click="yonlendir('edit', props.row.id)"
+                  >
+                    Düzenle
+                  </el-dropdown-item>
+                  <el-dropdown-item v-if="table_name == 'Activity'">
+                    <router-link :to="'/activity/' + props.row.id" class="text-dark text-decoration-none">Detay</router-link>
+                  </el-dropdown-item>
+                  <el-dropdown-item v-if="table_name == 'Blog'">
+                    <router-link :to="'/blog/' + props.row.id" class="text-dark text-decoration-none">Yorumlar</router-link>
+                  </el-dropdown-item>
+                  <el-dropdown-item divided class="text-danger" @click="sil(props.row.id)">Sil</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
           </div>
         </template>
       </el-table-column>
@@ -75,7 +100,7 @@
 </template>
 
 <script>
-import { list, deleted, update } from "@/hooks/iletisim.js";
+import { list, deleted, update, first, add } from "@/hooks/iletisim.js";
 import { mapGetters } from "vuex";
 import { ElNotification } from "element-plus";
 export default {
@@ -148,9 +173,50 @@ export default {
       }
     },
     switchChange(clm, data) {
+      this.loading = true;
+      console.log(data[clm]);
+      if (this.table_name == "ActivityRecord" && clm == "status" && data[clm] == "1") {
+        first("fungitu2_fungiturkey", "Settings").then((res) => {
+          console.log(res.data.data.record_confirm);
+          add("fungitu2_Simple", "mail", {
+            users: data.email,
+            title: "Fungi Turkey",
+            message: res.data.data.record_confirm,
+          }).then((res) => {
+            if (res.data.status == "success") {
+              ElNotification({
+                title: "Başarılı!",
+                message: "Mail başarıyla gönderildi.",
+                type: "success",
+              });
+              this.loading = false;
+            }
+          });
+        });
+      }
+      if (this.table_name == "ActivityRecord" && clm == "price_status" && data[clm] == "1") {
+        first("fungitu2_fungiturkey", "Settings").then((res) => {
+          console.log(res.data.data.price_confirm);
+          add("fungitu2_Simple", "mail", {
+            users: data.email,
+            title: "Fungi Turkey",
+            message: res.data.data.price_confirm,
+          }).then((res) => {
+            if (res.data.status == "success") {
+              ElNotification({
+                title: "Başarılı!",
+                message: "Mail başarıyla gönderildi.",
+                type: "success",
+              });
+              this.loading = false;
+            }
+          });
+        });
+      }
       let params = {};
       params[clm] = data[clm];
       update(this.database, this.table_name, data["id"], params);
+      this.loading = false;
     },
   },
 };

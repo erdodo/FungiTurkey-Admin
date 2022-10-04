@@ -40,7 +40,7 @@ export default {
   mounted() {
     axios.defaults.headers.common["token"] = this.getToken;
     axios.defaults.headers.common["Content-Type"] = "application/json";
-    axios.defaults.baseURL = "https://api.fungiturkey.org/api/";
+    axios.defaults.baseURL = this.api + "/api/";
   },
 };
 </script>

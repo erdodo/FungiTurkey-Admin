@@ -52,14 +52,14 @@ export default {
     const params = {
       limit: 100,
     };
-    list("fungitu2_Simple", "table_group", paramstg)
+    list("fungitu2_test_Simple", "table_group", paramstg)
       .then((res) => {
         this.databases = res.data.data;
         if (res.data.status == "error") {
           this.$store.commit("setToken", "");
           this.$store.commit("setProfile", "");
         }
-        list("fungitu2_Simple", "tables", params).then((res) => {
+        list("fungitu2_test_Simple", "tables", params).then((res) => {
           if (res.data.status == "error") {
             this.$store.commit("setToken", "");
             this.$store.commit("setProfile", "");
@@ -73,11 +73,9 @@ export default {
           this.loading = false;
         });
       })
-      .catch((e) => {
-        if (e.response.data.message == "Unauthorized") {
-          this.$store.commit("setToken", "");
-          this.$store.commit("setProfile", "");
-        }
+      .catch(() => {
+        /*this.$store.commit("setToken", "");
+        this.$store.commit("setProfile", "");*/
       });
   },
   watch: {

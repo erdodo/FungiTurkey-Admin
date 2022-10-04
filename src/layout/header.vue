@@ -3,6 +3,7 @@
     <div class="d-flex justify-content-between h-100 align-items-center">
       <el-button type="primary" class="d-md-none" :icon="Menu" circle @click="menu_state = !menu_state" />
       <h5>Hoş geldiniz</h5>
+      <h1 v-if="baseImg == 'https://api2.fungiturkey.org/uploads/'" class="text-danger">TEST</h1>
       <el-dropdown>
         <span class="el-dropdown-link">
           <h4 class="mb-0"><i class="bi bi-person-circle"></i>Profil</h4>

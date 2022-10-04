@@ -1,8 +1,9 @@
 <template>
-  <div class="border-bottom d-flex justify-content-end">
+  <!--div class="border-bottom d-flex justify-content-end">
     <a @click="cacheClear()" class="me-2 text-danger cursor-pointer">Cache temizle</a>
     <a href="https://github.com/erdodo">Erdoğan Yeşil</a>
-  </div>
+  </!--div-->
+  <div></div>
 </template>
 
 <script>

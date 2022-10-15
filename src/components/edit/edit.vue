@@ -137,13 +137,13 @@ export default {
             formData.append(key, this.prm[key] == undefined ? "" : this.prm[key]);
           }
         } else if (val.type == "tinyint" || val.type == "bit") {
-          this.prm[key] = this.prm[key] == true ? 1 : 0;
-          formData.append(key, this.prm[key] == undefined ? "0" : this.prm[key]);
+          this.prm[key] = this.prm[key] == true ? true : false;
+          formData.append(key, this.prm[key] == undefined ? false : this.prm[key]);
         } else {
           formData.append(key, this.prm[key] == undefined ? "" : this.prm[key]);
         }
       }
-      console.log(imageStatus);
+      console.log(this.prm);
       await update(this.database, this.table_name, this.id, imageStatus ? formData : this.prm).then((res) => {
         if (res.data.status == "success") {
           ElNotification({

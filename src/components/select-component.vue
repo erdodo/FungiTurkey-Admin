@@ -36,10 +36,18 @@ export default {
   },
   methods: {
     getDatas() {
+      console.log("select datas", this.referance);
       this.loading = true;
+      let filter = {};
+      if (this.referance.CONSTRAINT_NAME == "ActivityRoom-title") {
+        filter = {
+          room_status: "1",
+        };
+      }
       let params = {
         limit: 50,
         page: this.page,
+        filter: filter,
       };
       list(this.referance.REFERENCED_TABLE_SCHEMA, this.referance.REFERENCED_TABLE_NAME, params).then((res) => {
         if (this.referance.CONSTRAINT_NAME.split("-")[1]?.split(",").length > 1) {
@@ -49,6 +57,7 @@ export default {
             for (const clm of Object.values(columns)) {
               veri = veri + " " + val[clm];
             }
+            console.log(val.id, veri);
             this.options.push({
               id: val.id,
               text: veri,
@@ -57,6 +66,7 @@ export default {
         } else {
           let column = this.referance.CONSTRAINT_NAME.split("-")[1];
           for (const val of Object.values(res.data.data)) {
+            console.log(val.id, val);
             this.options.push({
               id: val.id,
               text: val[column],

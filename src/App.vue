@@ -1,6 +1,6 @@
 <template>
   <div v-if="getToken && (getProfile?.auths_group_id == 1 || getProfile?.auths_group_id == 0)" class="common-layout">
-    <el-container>
+    <el-container style="height: 100vh">
       <el-aside width="250px" class="d-none d-md-block">
         <Aside :menuState="menu" @menu_state="menu = $event"></Aside>
       </el-aside>

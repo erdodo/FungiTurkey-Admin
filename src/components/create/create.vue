@@ -87,7 +87,7 @@ export default {
         this.loading = false;
       });
       if (this.table_name == "mail") {
-        list("fungitu2_test_Simple", "users", { limit: 1000 }).then((res) => {
+        list("fungitu2_Simple", "users", { limit: 1000 }).then((res) => {
           this.users = res.data.data;
         });
       }
@@ -105,6 +105,9 @@ export default {
         console.log(this.columns);
         for (const val of Object.values(this.referans)) {
           if (val.COLUMN_NAME == "id") continue;
+          if (this.columns[val?.COLUMN_NAME] == undefined) {
+            continue;
+          }
           this.columns[val?.COLUMN_NAME]["ref"] = val;
           this.columns[val?.COLUMN_NAME]["ref_state"] = true;
         }

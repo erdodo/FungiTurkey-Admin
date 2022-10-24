@@ -17,13 +17,14 @@
           :filters="filters"
         ></Table>
       </el-tab-pane>
-      <!--el-tab-pane label="Mail Sistemi" name="ucuncu" class="p-3">
-        <label for="">Başlık</label>
-        <input v-model="mail.title" type="text" placeholder="Başlık" class="form-control" />
-        <label for="">Mesaj</label>
-        <ckeditor :editor="editor" v-model="mail.message" :config="editorConfig"></ckeditor>
-        <el-button type="primary" class="mt-3" @click="onSubmit">Gönder</el-button>
-      </!--el-tab-pane-->
+      <el-tab-pane label="Odalar" name="ucuncu">
+        <Table
+          v-if="activeName == 'ucuncu'"
+          database="fungitu2_fungiturkey"
+          table_name="ActivityRoom"
+          :filters="filters"
+        ></Table>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -42,7 +43,7 @@ export default {
       editor: ClassicEditor,
       activeName: "first",
       filters: {
-        activity_id: this.$route.params.id,
+        activity_id: parseInt(this.$route.params.id),
       },
       mail: {
         title: "",

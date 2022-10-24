@@ -6,7 +6,7 @@
         >Ekle</el-button
       >
     </div>
-    <el-table :data="datas?.data" height="70vh" style="width: 100%" v-loading="loading">
+    <el-table :data="datas?.data" height="75vh" style="width: 100%" v-loading="loading">
       <el-table-column v-for="clm in datas.columns" :key="clm" :prop="clm.name" :label="clm.display" min-width="200">
         <template #default="props" v-if="clm.type == 'file' || clm.type == 'tinyint' || clm.type == 'bit'">
           <div class="w-100 text-center" v-if="clm.type == 'file'">
@@ -101,7 +101,6 @@
     <div class="d-flex justify-content-center mt-2">
       <el-pagination
         background
-        hide-on-single-page
         :currentPage="page"
         :page-size="limit"
         :pager-count="5"
@@ -171,7 +170,7 @@ export default {
     },
     getData() {
       this.loading = true;
-      const params = {
+      let params = {
         limit: this.limit,
         page: this.page,
         order: {

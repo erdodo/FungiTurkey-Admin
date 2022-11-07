@@ -4,9 +4,9 @@
       <div class="card-body">
         <h3>Hoş geldiniz</h3>
         <label for="">Eposta adresiniz</label>
-        <el-input v-model="email" placeholder="Eposta adresiniz"></el-input>
+        <el-input v-model="email" @keypress.enter="giris()" placeholder="Eposta adresiniz"></el-input>
         <label class="mt-3" for="">Şifreniz</label>
-        <el-input v-model="password" type="password" placeholder="Şifreniz"></el-input>
+        <el-input v-model="password" type="password" @keypress.enter="giris()" placeholder="Şifreniz"></el-input>
         <el-button type="primary" class="mt-2" @click="giris()">Giriş yap </el-button>
       </div>
     </div>

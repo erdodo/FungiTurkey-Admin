@@ -73,11 +73,9 @@ export default {
           this.loading = false;
         });
       })
-      .catch((e) => {
-        if (e.response.data.message == "Unauthorized") {
-          this.$store.commit("setToken", "");
-          this.$store.commit("setProfile", "");
-        }
+      .catch(() => {
+        /*this.$store.commit("setToken", "");
+        this.$store.commit("setProfile", "");*/
       });
   },
   watch: {

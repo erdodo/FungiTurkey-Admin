@@ -1,9 +1,12 @@
 <template>
   <div v-if="loading == false">
-    <div class="d-flex justify-content-end" v-if="getAuths?.[table_name]?.['create_access'] == '1'">
-      <el-button type="primary" @click="yonlendir('create')">Ekle</el-button>
+    <div class="d-flex justify-content-end mb-3">
+      <el-button type="primary" plain @click="filtreDialog = true">Filtrele</el-button>
+      <el-button type="primary" v-if="getAuths?.[table_name]?.['create_access'] == '1'" @click="yonlendir('create')"
+        >Ekle</el-button
+      >
     </div>
-    <el-table :data="datas?.data" height="70vh" style="width: 100%" v-loading="loading">
+    <el-table :data="datas?.data" height="75vh" style="width: 100%" v-loading="loading">
       <el-table-column v-for="clm in datas.columns" :key="clm" :prop="clm.name" :label="clm.display" min-width="200">
         <template #default="props" v-if="clm.type == 'file' || clm.type == 'tinyint' || clm.type == 'bit'">
           <div class="w-100 text-center" v-if="clm.type == 'file'">
@@ -23,16 +26,23 @@
             <el-switch v-model="props.row[clm.name]" @click="switchChange(clm.name, props.row)" />
           </div>
         </template>
-        <template #default="props" v-else><div v-html="props.row[clm.name]"></div></template>
+        <template #default="props" v-else>
+          <div v-if="clm.ref_state == true && clm.name != 'id' && props.row[clm.name] > 0">
+            <el-button @click="(ref_detail = clm.ref), (ref_state = true), (ref_id = props.row[clm.name])">Detay</el-button>
+          </div>
+          <div v-else-if="clm.ref_state == true && clm.name != 'id' && props.row[clm.name] <= 0">Boş</div>
+          <div v-else v-html="props.row[clm.name]"></div>
+        </template>
       </el-table-column>
       <el-table-column fixed="right" label="İşlemler" width="min-content">
         <template #default="props">
-          <div class="d-none d-md-flex flex-column">
+          <div class="d-none d-md-flex flex-column justify-content-center">
             <el-button
               v-if="getAuths?.[table_name]?.['edit_access'] == '1'"
               type="success"
-              @click="yonlendir('edit', props.row.id)"
+              @click="yonlendir('edit', props.row?.id)"
               size=""
+              class="m-0 my-1"
               >Düzenle</el-button
             >
             <el-popconfirm
@@ -42,20 +52,20 @@
               :icon="InfoFilled"
               icon-color="#626AEF"
               title="Silmek istediğinize emin misiniz?"
-              @confirm="sil(props.row.id)"
+              @confirm="sil(props.row?.id)"
             >
               <template #reference>
-                <el-button type="danger" class="mt-2" size="">Sil</el-button>
+                <el-button type="danger" class="m-0 my-1" size="">Sil</el-button>
               </template>
             </el-popconfirm>
             <router-link
-              :to="'/activity/' + props.row.id"
-              class="btn btn-primary m-1 btn-sm mt-2 text-nowrap"
+              :to="'/activity/' + props.row?.id"
+              class="btn btn-primary m-0 my-1 btn-sm text-nowrap"
               v-if="table_name == 'Activity'"
               >Detay</router-link
             >
 
-            <router-link :to="'/blog/' + props.row.id" class="btn btn-primary m-1 btn-sm mt-2" v-if="table_name == 'Blog'"
+            <router-link :to="'/blog/' + props.row?.id" class="btn btn-primary m-0 my-1 btn-sm" v-if="table_name == 'Blog'"
               >Yorumlar</router-link
             >
           </div>
@@ -73,12 +83,14 @@
                     Düzenle
                   </el-dropdown-item>
                   <el-dropdown-item v-if="table_name == 'Activity'">
-                    <router-link :to="'/activity/' + props.row.id" class="text-dark text-decoration-none">Detay</router-link>
+                    <router-link :to="'/activity/' + props.row?.id" class="text-dark text-decoration-none"
+                      >Detay</router-link
+                    >
                   </el-dropdown-item>
                   <el-dropdown-item v-if="table_name == 'Blog'">
-                    <router-link :to="'/blog/' + props.row.id" class="text-dark text-decoration-none">Yorumlar</router-link>
+                    <router-link :to="'/blog/' + props.row?.id" class="text-dark text-decoration-none">Yorumlar</router-link>
                   </el-dropdown-item>
-                  <el-dropdown-item divided class="text-danger" @click="sil(props.row.id)">Sil</el-dropdown-item>
+                  <el-dropdown-item divided class="text-danger" @click="sil(props.row?.id)">Sil</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -89,6 +101,7 @@
     <div class="d-flex justify-content-center mt-2">
       <el-pagination
         background
+        :currentPage="page"
         :page-size="limit"
         :pager-count="5"
         layout="prev, pager, next"
@@ -96,13 +109,22 @@
         @current-change="currentChange"
       />
     </div>
+    <ref-detail-dialog :state="ref_state" @state="ref_state = $event" :detail="ref_detail" :id="ref_id"></ref-detail-dialog>
+    <filtre-dialog
+      :filtreDialog="filtreDialog"
+      @state="filtreDialog = $event"
+      :columns="datas.columns"
+      @filter="filter($event)"
+    ></filtre-dialog>
   </div>
 </template>
 
 <script>
 import { list, deleted, update, first, add } from "@/hooks/iletisim.js";
 import { mapGetters } from "vuex";
-import { ElNotification } from "element-plus";
+import { ElNotification, ElMessageBox } from "element-plus";
+import refDetailDialog from "./ref-detail.vue";
+import FiltreDialog from "./filtre-dialog.vue";
 export default {
   props: {
     database: String,
@@ -115,6 +137,12 @@ export default {
       loading: true,
       limit: 10,
       page: 1,
+      referans: [],
+      ref_detail: {},
+      ref_state: false,
+      ref_id: 0,
+      filtreDialog: false,
+      like: {},
     };
   },
   computed: {
@@ -136,33 +164,67 @@ export default {
       this.page = e;
       this.getData();
     },
+    filter(e) {
+      this.like = e;
+      this.getData();
+    },
     getData() {
       this.loading = true;
-      const params = {
+      let params = {
         limit: this.limit,
         page: this.page,
-        sort: {
+        order: {
           name: "id",
           type: "DESC",
         },
         filter: this.filters,
+        like: this.like,
       };
       list(this.database, this.table_name, params).then((res) => {
         this.datas = res.data;
         this.loading = false;
+        this.getRef();
+      });
+    },
+    getRef() {
+      const params = {
+        limit: 100,
+        filter: {
+          CONSTRAINT_SCHEMA: this.database,
+          TABLE_NAME: this.table_name,
+        },
+      };
+      list("information_schema", "KEY_COLUMN_USAGE", params).then((res) => {
+        this.referans = res.data.data;
+        console.log(this.datas.columns);
+        for (const val of Object.values(this.referans)) {
+          if (val.COLUMN_NAME == "id") continue;
+          this.datas.columns[val?.COLUMN_NAME]["ref"] = val;
+          this.datas.columns[val?.COLUMN_NAME]["ref_state"] = true;
+        }
+        console.log(this.datas.columns);
       });
     },
     sil(id) {
-      deleted(this.database, this.table_name, id).then((res) => {
-        if (res.data.status == "success") {
-          ElNotification({
-            title: "Başarılı!",
-            message: "Ekleme işlemi başarıyla gerçekleşti.",
-            type: "success",
-          });
-          this.loading = true;
-          this.getData();
-        }
+      ElMessageBox.confirm("Emin misiniz!", "Veri siliniyor.", {
+        confirmButtonText: "Sil",
+        cancelButtonText: "Vazgeç",
+        type: "warning",
+        callback: (action) => {
+          if (action == "confirm") {
+            deleted(this.database, this.table_name, id).then((res) => {
+              if (res.data.status == "success") {
+                ElNotification({
+                  title: "Başarılı!",
+                  message: "Ekleme işlemi başarıyla gerçekleşti.",
+                  type: "success",
+                });
+                this.loading = true;
+                this.getData();
+              }
+            });
+          }
+        },
       });
     },
     yonlendir(state, id) {
@@ -218,6 +280,10 @@ export default {
       update(this.database, this.table_name, data["id"], params);
       this.loading = false;
     },
+  },
+  components: {
+    refDetailDialog,
+    FiltreDialog,
   },
 };
 </script>

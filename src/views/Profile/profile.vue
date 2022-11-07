@@ -1,7 +1,7 @@
 <template>
   <div v-if="getProfile">
     Profil
-    <edit database="fungitu2_Simple" table_name="users" :id="getProfile.id"></edit>
+    <edit database="this.Simple" table_name="users" :id="getProfile.id"></edit>
   </div>
 </template>
 

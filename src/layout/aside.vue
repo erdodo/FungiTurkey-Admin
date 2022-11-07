@@ -52,14 +52,14 @@ export default {
     const params = {
       limit: 100,
     };
-    list("fungitu2_Simple", "table_group", paramstg)
+    list(this.Simple, "table_group", paramstg)
       .then((res) => {
         this.databases = res.data.data;
         if (res.data.status == "error") {
           this.$store.commit("setToken", "");
           this.$store.commit("setProfile", "");
         }
-        list("fungitu2_Simple", "tables", params).then((res) => {
+        list(this.Simple, "tables", params).then((res) => {
           if (res.data.status == "error") {
             this.$store.commit("setToken", "");
             this.$store.commit("setProfile", "");

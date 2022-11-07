@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-12">
       <h3>Yorumlar</h3>
-      <Table database="fungitu2_fungiturkey" table_name="BlogComment" :filters="filters"></Table>
+      <Table database="this.Fungi" table_name="BlogComment" :filters="filters"></Table>
     </div>
   </div>
 </template>

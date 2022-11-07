@@ -176,9 +176,9 @@ export default {
       this.loading = true;
       console.log(data[clm]);
       if (this.table_name == "ActivityRecord" && clm == "status" && data[clm] == "1") {
-        first("fungitu2_fungiturkey", "Settings").then((res) => {
+        first(this.Fungi, "Settings").then((res) => {
           console.log(res.data.data.record_confirm);
-          add("fungitu2_Simple", "mail", {
+          add(this.Simple, "mail", {
             users: data.email,
             title: "Fungi Turkey",
             message: res.data.data.record_confirm,
@@ -195,9 +195,9 @@ export default {
         });
       }
       if (this.table_name == "ActivityRecord" && clm == "price_status" && data[clm] == "1") {
-        first("fungitu2_fungiturkey", "Settings").then((res) => {
+        first(this.Fungi, "Settings").then((res) => {
           console.log(res.data.data.price_confirm);
-          add("fungitu2_Simple", "mail", {
+          add(this.Simple, "mail", {
             users: data.email,
             title: "Fungi Turkey",
             message: res.data.data.price_confirm,

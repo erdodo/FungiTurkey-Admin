@@ -2,7 +2,9 @@
   <div class="card h-100 px-2">
     <div class="d-flex justify-content-between h-100 align-items-center">
       <el-button type="primary" class="d-md-none" :icon="Menu" circle @click="menu_state = !menu_state" />
-      <h5>Hoş geldiniz</h5>
+      <div>
+        <div v-if="this.Simple == 'fungitu2_test_Simple'" class="h1 text-danger">TEST</div>
+      </div>
       <el-dropdown>
         <span class="el-dropdown-link">
           <h4 class="mb-0"><i class="bi bi-person-circle"></i>Profil</h4>

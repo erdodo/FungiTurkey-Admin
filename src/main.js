@@ -9,7 +9,9 @@ import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
 
 const app = createApp(App);
-app.config.globalProperties.baseImg = "https://api.fungiturkey.org/uploads/";
+app.config.globalProperties.baseImg = "https://api2.fungiturkey.org/uploads/";
+app.config.globalProperties.Simple = "fungitu2_test_Simple";
+app.config.globalProperties.Fungi = "fungitu2_test_fungiturkey";
 app.use(router);
 app.use(store);
 app.use(ElementPlus);

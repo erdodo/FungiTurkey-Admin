@@ -7,7 +7,7 @@
       <el-aside width="250px" v-if="menu == true" class="d-block d-md-none position-fixed h-100" style="z-index: 5">
         <Aside :menuState="menu" @menu_state="menu = $event"></Aside>
       </el-aside>
-      <el-container>
+      <el-container style="min-height: 100vh">
         <el-header><HeaderVue :menuState="menu" @menu_state="menu = $event"></HeaderVue></el-header>
         <el-container class="d-flex justify-content-between h-100">
           <el-main class=""><router-view /></el-main>
@@ -40,7 +40,7 @@ export default {
   mounted() {
     axios.defaults.headers.common["token"] = this.getToken;
     axios.defaults.headers.common["Content-Type"] = "application/json";
-    axios.defaults.baseURL = "https://api.fungiturkey.org/api/";
+    axios.defaults.baseURL = "https://api2.fungiturkey.org/api/";
   },
 };
 </script>

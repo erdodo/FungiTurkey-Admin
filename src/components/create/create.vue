@@ -83,7 +83,7 @@ export default {
         this.columns = response.data.columns;
       });
       if (this.table_name == "mail") {
-        list("fungitu2_Simple", "users", { limit: 1000 }).then((res) => {
+        list(this.Simple, "users", { limit: 1000 }).then((res) => {
           this.users = res.data.data;
         });
       }

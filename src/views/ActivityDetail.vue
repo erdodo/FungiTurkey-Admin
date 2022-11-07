@@ -2,20 +2,10 @@
   <div>
     <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
       <el-tab-pane label="Yorumlar" name="first">
-        <Table
-          v-if="activeName == 'first'"
-          database="fungitu2_fungiturkey"
-          table_name="ActivityComment"
-          :filters="filters"
-        ></Table>
+        <Table v-if="activeName == 'first'" database="this.Fungi" table_name="ActivityComment" :filters="filters"></Table>
       </el-tab-pane>
       <el-tab-pane label="Kayıtlar" name="second">
-        <Table
-          v-if="activeName == 'second'"
-          database="fungitu2_fungiturkey"
-          table_name="ActivityRecord"
-          :filters="filters"
-        ></Table>
+        <Table v-if="activeName == 'second'" database="this.Fungi" table_name="ActivityRecord" :filters="filters"></Table>
       </el-tab-pane>
       <!--el-tab-pane label="Mail Sistemi" name="ucuncu" class="p-3">
         <label for="">Başlık</label>
@@ -54,7 +44,7 @@ export default {
   methods: {
     /*async onSubmit() {
       await this.getUsers();
-      await add("fungitu2_Simple", "mail", this.mail).then((res) => {
+      await add(this.Simple, "mail", this.mail).then((res) => {
         if (res.data.status == "success") {
           ElNotification({
             title: "Başarılı!",
@@ -74,7 +64,7 @@ export default {
         },
       };
       let users = [];
-      await list("fungitu2_fungiturkey", "ActivityRecord", params).then((res) => {
+      await list(this.Fungi, "ActivityRecord", params).then((res) => {
         for (const val of Object.values(res.data.data)) {
           users.push(val.email);
         }

@@ -2,10 +2,10 @@
   <div>
     <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
       <el-tab-pane label="Yorumlar" name="first">
-        <Table v-if="activeName == 'first'" database="this.Fungi" table_name="ActivityComment" :filters="filters"></Table>
+        <Table v-if="activeName == 'first'" :database="this.Fungi" table_name="ActivityComment" :filters="filters"></Table>
       </el-tab-pane>
       <el-tab-pane label="Kayıtlar" name="second">
-        <Table v-if="activeName == 'second'" database="this.Fungi" table_name="ActivityRecord" :filters="filters"></Table>
+        <Table v-if="activeName == 'second'" :database="this.Fungi" table_name="ActivityRecord" :filters="filters"></Table>
       </el-tab-pane>
       <el-tab-pane label="Odalar" name="ucuncu">
         <Table

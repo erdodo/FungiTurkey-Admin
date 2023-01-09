@@ -3,13 +3,16 @@ import store from "@/store";
 axios.defaults.headers.common["token"] = store.getters.getToken == undefined ? 1 : store.getters.getToken;
 axios.defaults.headers.common["Content-Type"] = "application/json";
 
-const base_url = "https://api2.fungiturkey.org/api/";
+const base_url = "https://api.fungiturkey.org/api/";
 
 const list = async (db, table, params) => {
   return await axios.post(base_url + db + "/" + table, params);
 };
 const first = async (db, table, params) => {
   return await axios.post(base_url + db + "/" + table + "/first", params);
+};
+const detail = async (db, table, id) => {
+  return await axios.post(base_url + db + "/" + table + "/" + id + "/get");
 };
 const create = async (db, table) => {
   return await axios.post(base_url + db + "/" + table + "/create");
@@ -26,4 +29,4 @@ const update = async (db, table, id, form) => {
 const deleted = async (db, table, id) => {
   return await axios.post(base_url + db + "/" + table + "/" + id + "/delete");
 };
-export { list, first, create, add, edit, update, deleted };
+export { list, first, create, add, edit, update, deleted, detail };

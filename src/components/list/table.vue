@@ -7,36 +7,43 @@
       >
     </div>
     <el-table :data="datas?.data" height="75vh" style="width: 100%" v-loading="loading">
-      <el-table-column v-for="clm in datas.columns" :key="clm" :prop="clm.name" :label="clm.display" min-width="200">
-        <template #default="props" v-if="clm.type == 'file' || clm.type == 'tinyint' || clm.type == 'bit'">
-          <div class="w-100 text-center" v-if="clm.type == 'file'">
-            <img :src="baseImg + props.row.image" alt="" height="80" />
-          </div>
-          <div class="w-100 text-center" v-if="clm.type == 'tinyint' || clm.type == 'bit'">
-            <el-tag class="mx-1" size="large" type="success" v-if="props.row[clm.name] == 1"
-              ><i class="bi bi-check-circle"></i>
-            </el-tag>
-            <el-tag class="mx-1" size="large" type="danger" v-if="props.row[clm.name] == 0"
-              ><i class="bi bi-x-circle"></i>
-            </el-tag>
-            <template>
-              {{ (props.row[clm.name] = props.row[clm.name] == "1" ? true : false) }}
-            </template>
+      <el-table-column
+        v-for="clm in datas.columns"
+        :key="clm"
+        :prop="clm.name"
+        :label="clm.display"
+        :min-width="clm.name == 'id' ? 50 : 120"
+      >
+        <template #default="props">
+          <div v-if="clm.type == 'file' || clm.type == 'tinyint' || clm.type == 'bit'">
+            <div class="w-100 text-center" v-if="clm.type == 'file'">
+              <img :src="baseImg + props.row.image" alt="" height="80" />
+            </div>
+            <div class="w-100 text-center" v-if="clm.type == 'tinyint' || clm.type == 'bit'">
+              <el-tag class="mx-1" size="large" type="success" v-if="props.row[clm.name] == 1"
+                ><i class="bi bi-check-circle"></i>
+              </el-tag>
+              <el-tag class="mx-1" size="large" type="danger" v-if="props.row[clm.name] == 0"
+                ><i class="bi bi-x-circle"></i>
+              </el-tag>
+              <template>
+                {{ (props.row[clm.name] = props.row[clm.name] == "1" ? true : false) }}
+              </template>
 
-            <el-switch v-model="props.row[clm.name]" @click="switchChange(clm.name, props.row)" />
+              <el-switch v-model="props.row[clm.name]" @click="switchChange(clm.name, props.row)" />
+            </div>
           </div>
-        </template>
-        <template #default="props" v-else>
-          <div v-if="clm.ref_state == true && clm.name != 'id' && props.row[clm.name] > 0">
+          <div v-else-if="clm.ref_state == true && props.row[clm.name] > 0">
             <el-button @click="(ref_detail = clm.ref), (ref_state = true), (ref_id = props.row[clm.name])">Detay</el-button>
           </div>
-          <div v-else-if="clm.ref_state == true && clm.name != 'id' && props.row[clm.name] <= 0">Boş</div>
+          <div v-else-if="clm.ref_state == true && props.row[clm.name] <= 0">Boş</div>
           <div v-else v-html="props.row[clm.name]"></div>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="İşlemler" width="min-content">
+      <el-table-column fixed="right" label="İşlemler" width="100px">
         <template #default="props">
           <div class="d-none d-md-flex flex-column justify-content-center">
+            <el-button class="text-primary" @click="detayAc(props.row?.id)">Detay</el-button>
             <el-button
               v-if="getAuths?.[table_name]?.['edit_access'] == '1'"
               type="success"
@@ -45,24 +52,20 @@
               class="m-0 my-1"
               >Düzenle</el-button
             >
-            <el-popconfirm
+            <el-button
               v-if="getAuths?.[table_name]?.['delete_access'] == '1'"
-              confirm-button-text="Evet"
-              cancel-button-text="Vazgeç"
-              :icon="InfoFilled"
-              icon-color="#626AEF"
-              title="Silmek istediğinize emin misiniz?"
-              @confirm="sil(props.row?.id)"
+              type="danger"
+              class="m-0 my-1"
+              size=""
+              @click="sil(props.row?.id)"
+              >Sil</el-button
             >
-              <template #reference>
-                <el-button type="danger" class="m-0 my-1" size="">Sil</el-button>
-              </template>
-            </el-popconfirm>
+
             <router-link
               :to="'/activity/' + props.row?.id"
               class="btn btn-primary m-0 my-1 btn-sm text-nowrap"
               v-if="table_name == 'Activity'"
-              >Detay</router-link
+              >Etk Detay</router-link
             >
 
             <router-link :to="'/blog/' + props.row?.id" class="btn btn-primary m-0 my-1 btn-sm" v-if="table_name == 'Blog'"
@@ -76,6 +79,7 @@
               </el-button>
               <template #dropdown>
                 <el-dropdown-menu>
+                  <el-dropdown-item class="text-primary" @click="detayAc(props.row?.id)">Detay</el-dropdown-item>
                   <el-dropdown-item
                     v-if="getAuths?.[table_name]?.['edit_access'] == '1'"
                     @click="yonlendir('edit', props.row.id)"
@@ -83,8 +87,8 @@
                     Düzenle
                   </el-dropdown-item>
                   <el-dropdown-item v-if="table_name == 'Activity'">
-                    <router-link :to="'/activity/' + props.row?.id" class="text-dark text-decoration-none"
-                      >Detay</router-link
+                    <router-link :to="'/activity/' + props.row?.id" class="text-dark text-decoration-none">
+                      Etk Detay</router-link
                     >
                   </el-dropdown-item>
                   <el-dropdown-item v-if="table_name == 'Blog'">
@@ -116,6 +120,7 @@
       :columns="datas.columns"
       @filter="filter($event)"
     ></filtre-dialog>
+    <detail v-model:visible="detail_visible" :id="detay_id" :database="database" :table_name="table_name"></detail>
   </div>
 </template>
 
@@ -125,6 +130,7 @@ import { mapGetters } from "vuex";
 import { ElNotification, ElMessageBox } from "element-plus";
 import refDetailDialog from "./ref-detail.vue";
 import FiltreDialog from "./filtre-dialog.vue";
+import detail from "@/components/detail";
 export default {
   props: {
     database: String,
@@ -143,6 +149,8 @@ export default {
       ref_id: 0,
       filtreDialog: false,
       like: {},
+      detail_visible: false,
+      detay_id: 0,
     };
   },
   computed: {
@@ -159,6 +167,10 @@ export default {
     }
   },
   methods: {
+    detayAc(id) {
+      this.detay_id = id;
+      this.detail_visible = true;
+    },
     currentChange(e) {
       console.log(e);
       this.page = e;
@@ -236,7 +248,7 @@ export default {
     },
     switchChange(clm, data) {
       this.loading = true;
-      console.log(data[clm]);
+      console.log(data);
       if (this.table_name == "ActivityRecord" && clm == "status" && data[clm] == "1") {
         first(this.Fungi, "Settings").then((res) => {
           console.log(res.data.data.record_confirm);
@@ -284,6 +296,7 @@ export default {
   components: {
     refDetailDialog,
     FiltreDialog,
+    detail,
   },
 };
 </script>

@@ -11,13 +11,13 @@ import { tr } from "element-plus/es/locale";
 
 const app = createApp(App);
 
-let api = "https://api2.fungiturkey.org/";
+let api = "https://api.fungiturkey.org/";
 app.config.globalProperties.baseImg = api + "uploads/";
 app.config.globalProperties.api = api;
 
-app.config.globalProperties.baseImg = "https://api2.fungiturkey.org/uploads/";
-app.config.globalProperties.Simple = "fungitu2_test_Simple";
-app.config.globalProperties.Fungi = "fungitu2_test_fungiturkey";
+app.config.globalProperties.baseImg = "https://api.fungiturkey.org/uploads/";
+app.config.globalProperties.Simple = "fungitu2_Simple";
+app.config.globalProperties.Fungi = "fungitu2_fungiturkey";
 
 app.use(router);
 app.use(store);

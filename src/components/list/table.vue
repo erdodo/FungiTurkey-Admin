@@ -212,6 +212,14 @@ export default {
         type: "warning",
         callback: (action) => {
           if (action == "confirm") {
+            if (this.table_name == "ActivityRecord" && this.datas.data.find((e) => e.id == id).room_id > 0) {
+              console.log(this.datas.data.find((e) => e.id == id));
+              let form_data = {
+                rent_status: false,
+                member_id: null,
+              };
+              update("fungitu2_fungiturkey", "ActivityRoom", this.datas.data.find((e) => e.id == id).room_id, form_data);
+            }
             deleted(this.database, this.table_name, id).then((res) => {
               if (res.data.status == "success") {
                 ElNotification({
